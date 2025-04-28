@@ -1,4 +1,4 @@
-/* Genel Ayarlar */
+konu/* Genel Ayarlar */
 /* Google Font - Playfair Display (zarif başlıklar için) ve Roboto (genel metin için) */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
 
@@ -957,3 +957,209 @@ footer p {
     }
 
     .categ
+/* --- Quick View Modal Stilleri --- */
+.modal {
+    display: none; /* Başlangıçta gizli */
+    position: fixed; /* Ekranın sabit bir yerinde durur */
+    z-index: 1001; /* Bildirim kutusundan daha yüksek bir z-index */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* İçerik sığmazsa kaydırma çubuğu çıkar */
+    background-color: rgba(0,0,0,0.6); /* Yarı saydam siyah arka plan */
+    backdrop-filter: blur(5px); /* Arka planı hafif bulanıklaştır (opsiyonel, modern tarayıcılar destekler) */
+    -webkit-backdrop-filter: blur(5px); /* Safari desteği için */
+}
+
+.modal.show {
+    display: flex; /* Gösterildiğinde flexbox olarak göster */
+    justify-content: center; /* İçeriği yatayda ortala */
+    align-items: center; /* İçeriği dikeyde ortala */
+}
+
+.modal-content {
+    background-color: var(--card-background); /* Beyaz arka plan */
+    margin: auto; /* Dikey ortalama için */
+    padding: var(--gap-medium);
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 8px 25px var(--shadow-heavy); /* Belirgin gölge */
+    width: 90%; /* Genişlik */
+    max-width: 700px; /* Maksimum genişlik */
+    position: relative; /* Kapatma düğmesi için pozisyon */
+    opacity: 0; /* Başlangıçta gizli (geçiş efekti için) */
+    transform: translateY(-50px); /* Başlangıçta biraz yukarıda (geçiş efekti için) */
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.modal.show .modal-content {
+    opacity: 1; /* Gösterildiğinde tam görünür */
+    transform: translateY(0); /* Orijinal yerine gel */
+}
+
+
+.close-button {
+    color: var(--light-text-color);
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--text-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal İçindeki Ürün Detay Yapısı */
+.modal-product-detail {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta */
+    gap: var(--gap-medium); /* Boşluk */
+    align-items: flex-start; /* Üstten hizala */
+}
+
+.modal-product-image {
+    flex: 1 1 250px; /* Esnek boyutlandırma */
+    text-align: center;
+}
+
+.modal-product-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 2px 10px var(--shadow-light);
+}
+
+.modal-product-info {
+    flex: 1 1 300px; /* Esnek boyutlandırma */
+}
+
+.modal-product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.modal-product-price {
+    font-size: 20px;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: var(--gap-small);
+}
+
+.modal-product-description h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.modal-product-description p {
+    color: var(--light-text-color);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Modal Buton Stilleri */
+.modal-add-to-cart,
+.modal-add-to-favorites {
+     display: block; /* Alt alta sırala */
+     width: 100%; /* Genişlik */
+     margin-top: var(--gap-small);
+     padding: 10px 20px;
+     font-size: 16px;
+     font-weight: bold;
+     border: none;
+     border-radius: var(--border-radius-small);
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+     text-align: center;
+}
+
+.modal-add-to-cart {
+     background-color: var(--success-color);
+     color: white;
+}
+
+.modal-add-to-cart:hover {
+     background-color: #218838;
+}
+
+.modal-add-to-favorites {
+     background-color: var(--secondary-color);
+     color: white;
+}
+
+.modal-add-to-favorites:hover {
+     background-color: #0056b3;
+}
+
+.modal-add-to-favorites.favorited {
+     background-color: #6c757d; /* Gray out when favorited */
+     cursor: not-allowed;
+}
+
+.modal-add-to-favorites.favorited:hover {
+     background-color: #6c757d;
+}
+
+
+/* Responsive Düzenlemeler (Modal İçin) */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--gap-small);
+    }
+
+    .modal-product-detail {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-small);
+    }
+
+    .modal-product-image {
+        flex: none;
+        width: 80%;
+    }
+
+    .modal-product-info {
+        flex: none;
+        width: 100%;
+        text-align: center;
+    }
+
+     .modal-product-name {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .modal-product-price {
+        font-size: 18px;
+        margin-bottom: var(--gap-small);
+    }
+
+    .modal-product-description h4 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .modal-product-description p {
+        font-size: 14px;
+    }
+
+     .modal-add-to-cart,
+    .modal-add-to-favorites {
+        padding: 8px 15px;
+        font-size: 15px;
+    }
+}
+
+        
