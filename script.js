@@ -175,7 +175,140 @@ function updateCartAndFavoriteCounts() {
 }
 
 
-// --- Rendering Functions ---
+// Dummy product data (replace with actual data fetching)
+const productsData = [
+    {
+        id: 'yzk001',
+        name: 'Pırlanta Tektaş Yüzük',
+        price: 950,
+        image: 'placeholder_yuzuk_pirlanta.jpg',
+        description: 'Klasik ve zarif pırlanta tektaş yüzük. 0.25 karat, 14 ayar beyaz altın.'
+    },
+    {
+        id: 'kly002',
+        name: 'Altın Kelebek Kolye',
+        price: 420,
+        image: 'placeholder_kolye_kelebek.jpg',
+        description: 'İnce zincirli, zarif altın kelebek figürlü kolye. 8 ayar sarı altın.'
+    },
+    {
+        id: 'st003',
+        name: 'Minimalist Bayan Saat',
+        price: 680,
+        image: 'placeholder_saat_minimalist.jpg',
+        description: 'Modern ve sade tasarımlı bayan kol saati. Deri kayış, Japon mekanizma.'
+    },
+    {
+        id: 'kp004',
+        name: 'Gümüş Halka Küpe',
+        price: 180,
+        image: 'placeholder_kupe_halka.jpg',
+        description: 'Günlük kullanıma uygun, orta boy gümüş halka küpe. 925 Ayar gümüş.'
+    },
+    {
+        id: 'yzk005',
+        name: 'Safir Taşlı Yüzük',
+        price: 750,
+        image: 'placeholder_yuzuk_safir.jpg',
+        description: 'Göz alıcı safir taşı ve etrafında zirkon taşlarla süslenmiş yüzük.'
+    },
+     {
+        id: 'kly006',
+        name: 'İnci Detaylı Kolye',
+        price: 350,
+        image: 'placeholder_kolye_inci.jpg',
+        description: 'Zarif bir tatlı su incisi ile tamamlanan gümüş kolye.'
+    },
+];
+
+
+// --- Quick View Modal Functions ---
+const quickViewModal = document.getElementById('quick-view-modal');
+const closeModalButton = document.querySelector('.modal .close-button');
+const modalProductImage = document.querySelector('.modal-product-image img');
+const modalProductName = document.querySelector('.modal-product-name');
+const modalProductPrice = document.querySelector('.modal-product-price');
+const modalProductDescription = document.querySelector('.modal-product-description p');
+const modalAddToCartButton = document.querySelector('.modal-add-to-cart');
+const modalAddToFavoritesButton = document.querySelector('.modal-add-to-favorites');
+
+// Function to populate the modal with product data
+function populateModal(product) {
+    if (!product) {
+        console.error("Product data is missing for modal.");
+        return;
+    }
+
+    modalProductImage.src = product.image;
+    modalProductImage.alt = product.name + " görseli";
+    modalProductName.innerText = product.name;
+    modalProductPrice.innerText = `${product.price} TL`;
+    modalProductDescription.innerText = product.description;
+
+    // Add event listeners to modal buttons using the current product data
+    // Önceki event listener'ları kaldırıp yenilerini eklemek önemlidir, aksi halde birden fazla listener olabilir
+    const newAddToCartBtn = modalAddToCartButton.cloneNode(true);
+    modalAddToCartButton.parentNode.replaceChild(newAddToCartBtn, modalAddToCartButton);
+    newAddToCartBtn.onclick = () => {
+        cart.add(product);
+        closeModal(); // Sepete ekledikten sonra modalı kapat
+    };
+
+     const newAddToFavoritesBtn = modalAddToFavoritesButton.cloneNode(true);
+     modalAddToFavoritesButton.parentNode.replaceChild(newAddToFavoritesBtn, modalAddToFavoritesButton);
+     newAddToFavoritesBtn.onclick = () => {
+         favorites.add(product);
+         // Favorilere ekledikten sonra modalı açık bırakabilir veya kapatabilirsiniz
+         // closeModal(); // İsterseniz favorilere ekledikten sonra modalı kapatın
+     };
+    // Favori butonu durumunu modal açıldığında da güncelle
+    updateFavoriteButtons(); // updateFavoriteButtons fonksiyonu modal içindeki butonu da bulup güncelleyecektir
+}
+
+// Function to open the modal
+function openModal(productId) {
+    const product = productsData.find(p => p.id === productId);
+    if (product) {
+        populateModal(product);
+        quickViewModal.classList.add('show'); // CSS ile modalı görünür yap
+    } else {
+        console.error(`Product with ID ${productId} not found.`);
+        showNotification("Ürün bilgisi yüklenemedi.", 'error'); // Hata bildirimi
+    }
+}
+
+// Function to close the modal
+function closeModal() {
+    quickViewModal.classList.remove('show'); // CSS ile modalı gizle
+    // Modal içeriğini temizlemek isterseniz buraya ekleyebilirsiniz
+    // modalProductImage.src = '';
+    // modalProductImage.alt = '';
+    // modalProductName.innerText = '';
+    // modalProductPrice.innerText = '';
+    // modalProductDescription.innerText = '';
+}
+
+// Event listeners for modal close actions
+if (closeModalButton) {
+    closeModalButton.addEventListener('click', closeModal);
+}
+
+// Arka plana tıklayınca modalı kapatma
+window.addEventListener('click', (event) => {
+    if (event.target === quickViewModal) {
+        closeModal();
+    }
+});
+
+// ESC tuşuna basınca modalı kapatma
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && quickViewModal.classList.contains('show')) {
+        closeModal();
+    }
+});
+
+
+// --- Rendering Functions (Güncellenmiş - Ürün linkleri modalı açacak) ---
 
 // Function to render cart items on sepet.html
 function renderCart() {
@@ -240,7 +373,7 @@ function renderFavorites() {
          // Favori sayfasında favoriden çıkarma butonu için data-product-id eklendi
         favoritesListElement.innerHTML += `
             <div class="product">
-                <a href="urun-detay.html?id=${product.id}">
+                <a href="urun-detay.html?id=${product.id}" data-product-id="${product.id}" class="product-link">
                      <img src="${product.image}" alt="${product.name} görseli">
                      <h3>${product.name}</h3>
                 </a>
@@ -250,9 +383,12 @@ function renderFavorites() {
             </div>
         `;
     });
+
+     // Favoriler sayfasındaki ürün linklerine modal açma event listener'ı ekle
+    addModalEventListeners('.favorites-list');
 }
 
-// Dummy product data (replace with actual data fetching)
+// Dummy product data (Değişiklik yok)
 const productsData = [
     {
         id: 'yzk001',
@@ -325,15 +461,10 @@ function renderProductDetail() {
 
         const addToFavoritesButton = productDetailContainer.querySelector('.add-to-favorites');
         if (addToFavoritesButton) {
-            // Favori butonuna data-product-id eklendi
             addToFavoritesButton.setAttribute('data-product-id', product.id);
             addToFavoritesButton.onclick = () => favorites.add(product);
         }
 
-        // Ürün detay sayfasında favori durumunu kontrol et ve butonu güncelle (updateFavoriteButtons çağrılacak)
-
-
-        // Update title and meta description based on product
         document.title = `${product.name} - DIAMOND - BUJITERI`;
         const metaDescription = document.querySelector('meta[name="description"]');
          if(metaDescription) {
@@ -342,7 +473,6 @@ function renderProductDetail() {
 
 
     } else {
-        // Handle case where product is not found
         productDetailContainer.innerHTML = '<p>Ürün bulunamadı.</p>';
         document.title = `Ürün Bulunamadı - DIAMOND - BUJITERI`;
          const metaDescription = document.querySelector('meta[name="description"]');
@@ -363,10 +493,10 @@ function renderProductList() {
      productListElement.innerHTML = ''; // Clear existing placeholders
 
     productsData.forEach(product => {
-        // Favori butonu için data-product-id eklendi
+        // Ürün linkine ve favori butonuna data-product-id eklendi
         productListElement.innerHTML += `
             <div class="product">
-                <a href="urun-detay.html?id=${product.id}">
+                <a href="urun-detay.html?id=${product.id}" data-product-id="${product.id}" class="product-link">
                     <img src="${product.image}" alt="${product.name} görseli">
                     <h3>${product.name}</h3>
                 </a>
@@ -376,117 +506,12 @@ function renderProductList() {
             </div>
         `;
     });
-    updateFavoriteButtons(); // Ürün listesi render edildikten sonra favori butonlarının durumunu güncelle
+
+    // Ürün listesi render edildikten sonra modal event listener'larını ekle
+    addModalEventListeners('.product-list');
+    updateFavoriteButtons(); // Favori butonlarının durumunu güncelle
 }
 
-// Helper function to update the state of favorite buttons across the site
-function updateFavoriteButtons() {
-    // Sayfadaki tüm favori butonlarını seç
-    const favButtons = document.querySelectorAll('.add-to-favorites');
-
-    favButtons.forEach(button => {
-        // Butonun data-product-id özniteliğinden ürün ID'sini al
-        const productId = button.getAttribute('data-product-id');
-
-        if (productId) {
-            // Ürünün favorilerde olup olmadığını kontrol et
-            const isFav = favorites.isFavorite(productId);
-
-            // Butonun metnini ve sınıfını güncelle
-            if (isFav) {
-                button.innerText = 'Favorilerde ✅';
-                button.classList.add('favorited');
-                button.disabled = true; // Zaten favoride ise devre dışı bırakılabilir
-            } else {
-                button.innerText = 'Favorilere Ekle';
-                button.classList.remove('favorited');
-                button.disabled = false; // Favoride değilse etkinleştir
-            }
-        }
-    });
-
-    // Favoriler sayfasındaki "Favoriden Çıkar" butonları için
-    const removeFavButtons = document.querySelectorAll('.remove-favorite');
-     removeFavButtons.forEach(button => {
-         const productId = button.getAttribute('data-product-id');
-         if (productId) {
-              const isFav = favorites.isFavorite(productId);
-              // Eğer ürün favorilerden çıkarıldıysa (yani artık isFav false ise),
-              // favoriler sayfasındaki renderFavorites listeyi zaten güncelleyecektir.
-              // Bu kısım mevcut logic ile gerekmiyor ancak farklı bir render yaklaşımı olursa önemli hale gelir.
-         }
-     });
-}
-
-
-// --- Page Specific Initialization ---
-window.addEventListener('load', () => {
-    const pathname = window.location.pathname;
-
-    if (pathname.includes('sepet.html')) {
-        renderCart();
-    } else if (pathname.includes('favoriler.html')) {
-        renderFavorites();
-    } else if (pathname.includes('urun-detay.html')) {
-        renderProductDetail();
-    } else if (pathname.includes('index.html') || pathname === '/') {
-         renderProductList();
-    }
-
-    if (pathname.includes('iletisim.html')) {
-        initContactForm();
-    }
-
-    updateCartAndFavoriteCounts(); // Sayaçları sayfa yüklendiğinde güncelle
-    updateFavoriteButtons(); // Favori butonlarını sayfa yüklendiğinde güncelle
-
-});
-
-// --- Contact Form Handling ---
-function initContactForm() {
-    const contactForm = document.querySelector('#contact-form form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
-
-            if (!name || !email || !message) {
-                showNotification('Lütfen tüm gerekli alanları doldurun.', 'warning'); // Görsel bildirim
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                 showNotification('Lütfen geçerli bir e-posta adresi girin.', 'warning'); // Görsel bildirim
-                 return;
-            }
-
-            console.log('Form Submitted!');
-            console.log('Name:', name);
-            console.log('Email:', email);
-            console.log('Subject:', document.getElementById('subject').value.trim());
-            console.log('Message:', message);
-
-            showNotification('Mesajınız alındı! Teşekkür ederiz.', 'success'); // Görsel bildirim
-
-            contactForm.reset();
-
-            // Backend gönderimi için fetch bloğu (yorum satırı)
-        });
-    }
-}
-
-// Basic Checkout Handler ---
-function handleCheckout() {
-    if (cart.items.length === 0) {
-        showNotification('Sepetiniz boş. Ödeme yapılamaz.', 'warning'); // Görsel bildirim
-        return;
-    }
-    const total = cart.getTotal();
-    showNotification(`Toplam ${total} TL için ödeme adımına yönlendiriliyorsunuz. (Bu sadece bir simülasyondur)`, 'success'); // Görsel bildirim
-    console.log("Proceeding to checkout with items:", cart.items);
-            }
-                   
+// Function to add event listeners to product links to open modal
+function addModalEventListeners(containerSelector) {
+    const containe
