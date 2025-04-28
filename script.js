@@ -182,79 +182,43 @@ const productsData = [
         name: 'Pırlanta Tektaş Yüzük',
         price: 950,
         image: 'placeholder_yuzuk_pirlanta.jpg',
-        description: 'Klasik ve zarif pırlanta tektaş yüzük. 0.25 karat, 14 ayar beyaz altın.',
-        details: [
-            "0.25 Karat Pırlanta",
-            "14 Ayar Beyaz Altın",
-            "Sertifikalı Ürün",
-            "Farklı Boyut Seçenekleri"
-        ]
+        description: 'Klasik ve zarif pırlanta tektaş yüzük. 0.25 karat, 14 ayar beyaz altın.'
     },
     {
         id: 'kly002',
         name: 'Altın Kelebek Kolye',
         price: 420,
         image: 'placeholder_kolye_kelebek.jpg',
-        description: 'İnce zincirli, zarif altın kelebek figürlü kolye. 8 ayar sarı altın.',
-        details: [
-            "8 Ayar Sarı Altın",
-            "Hafif ve Zarif Tasarım",
-            "Günlük Kullanıma Uygun",
-            "Hediye Kutusu ile Gönderilir"
-        ]
+        description: 'İnce zincirli, zarif altın kelebek figürlü kolye. 8 ayar sarı altın.'
     },
     {
         id: 'st003',
         name: 'Minimalist Bayan Saat',
         price: 680,
         image: 'placeholder_saat_minimalist.jpg',
-        description: 'Modern ve sade tasarımlı bayan kol saati. Deri kayış, Japon mekanizma.',
-        details: [
-            "Deri Kayış",
-            "Japon Quartz Mekanizma",
-            "Suya Dayanıklı",
-            "2 Yıl Garanti"
-        ]
+        description: 'Modern ve sade tasarımlı bayan kol saati. Deri kayış, Japon mekanizma.'
     },
     {
         id: 'kp004',
         name: 'Gümüş Halka Küpe',
         price: 180,
         image: 'placeholder_kupe_halka.jpg',
-        description: 'Günlük kullanıma uygun, orta boy gümüş halka küpe. 925 Ayar gümüş.',
-        details: [
-            "925 Ayar Gümüş",
-            "Antialerjenik Malzeme",
-            "Hafif ve Rahat Kullanım",
-            "Farklı Boyut Seçenekleri"
-        ]
+        description: 'Günlük kullanıma uygun, orta boy gümüş halka küpe. 925 Ayar gümüş.'
     },
     {
         id: 'yzk005',
         name: 'Safir Taşlı Yüzük',
         price: 750,
         image: 'placeholder_yuzuk_safir.jpg',
-        description: 'Göz alıcı safir taşı ve etrafında zirkon taşlarla süslenmiş yüzük.',
-        details: [
-            "Doğal Safir Taşı",
-            "Zirkon Taş Detayları",
-            "925 Ayar Gümüş Üzeri Altın Kaplama",
-            "Özel Tasarım"
-        ]
+        description: 'Göz alıcı safir taşı ve etrafında zirkon taşlarla süslenmiş yüzük.'
     },
-    {
+     {
         id: 'kly006',
         name: 'İnci Detaylı Kolye',
         price: 350,
         image: 'placeholder_kolye_inci.jpg',
-        description: 'Zarif bir tatlı su incisi ile tamamlanan gümüş kolye.',
-        details: [
-            "Tatlı Su İncisi",
-            "925 Ayar Gümüş",
-            "Ayarlanabilir Zincir Uzunluğu",
-            "Klasik ve Zamansız Tasarım"
-        ]
-    }
+        description: 'Zarif bir tatlı su incisi ile tamamlanan gümüş kolye.'
+    },
 ];
 
 
@@ -420,5 +384,34 @@ function renderFavorites() {
         `;
     });
 
-     // Favoriler sayfasındaki
-        
+     // Favoriler sayfasındaki ürün linklerine modal açma event listener'ı ekle
+    addModalEventListeners('.favorites-list');
+}
+
+// Dummy product data (Değişiklik yok)
+const productsData = [
+    {
+        id: 'yzk001',
+        name: 'Pırlanta Tektaş Yüzük',
+        price: 950,
+        image: 'placeholder_yuzuk_pirlanta.jpg',
+        description: 'Klasik ve zarif pırlanta tektaş yüzük. 0.25 karat, 14 ayar beyaz altın.'
+    },
+    {
+        id: 'kly002',
+        name: 'Altın Kelebek Kolye',
+        price: 420,
+        image: 'placeholder_kolye_kelebek.jpg',
+        description: 'İnce zincirli, zarif altın kelebek figürlü kolye. 8 ayar sarı altın.'
+    },
+    {
+        id: 'st003',
+        name: 'Minimalist Bayan Saat',
+        price: 680,
+        image: 'placeholder_saat_minimalist.jpg',
+        description: 'Modern ve sade tasarımlı bayan kol saati. Deri kayış, Japon mekanizma.'
+    },
+    {
+        id: 'kp004',
+        name: 'Gümüş Halka
+    
