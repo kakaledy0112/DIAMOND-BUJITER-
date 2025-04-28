@@ -3,18 +3,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-    /* Tema Renkleri */
-    --primary-color: #b8860b; /* Altın Sarısı */
-    --secondary-color: #007bff; /* Mavi (Kategoriler için) */
-    --success-color: #28a745; /* Yeşil (Sepete Ekle) */
-    --danger-color: #dc3545; /* Kırmızı (Kaldır/Hata) */
-    --text-color: #343a40; /* Koyu Gri Metin */
-    --light-text-color: #555; /* Açık Gri Metin */
-    --background-color: #f8f9fa; /* Çok Açık Gri Arka Plan */
-    --card-background: #ffffff; /* Beyaz Kart Arka Planı */
-    --border-color: #e9ecef; /* Çok Açık Gri Kenarlık */
-    --footer-background: #343a40; /* Koyu Gri Footer Arka Planı */
-    --hover-color: #a0750a; /* Daha Koyu Altın Sarısı Hover */
+    /* Yeni Tema Renkleri */
+    --primary-color: #2d3e50;
+    --secondary-color: #87a86f;
+    --success-color: #4caf50;
+    --danger-color: #f44336;
+    --text-color: #444444;
+    --light-text-color: #777777;
+    --background-color: #f5f5f5;
+    --card-background: #ffffff;
+    --border-color: #e0e0e0;
+    --footer-background: #222222;
+    --hover-color: #1a2b3c;
     --shadow-light: rgba(0,0,0,0.08);
     --shadow-medium: rgba(0,0,0,0.16);
     --shadow-strong: rgba(0,0,0,0.24);
