@@ -12,51 +12,89 @@
 <body>
 
     <header>
-        <h1>Site Başlığı</h1>
-        <nav>
-            <a href="index.html">Ana Sayfa</a>
-            <a href="urun-detay.html">Ürünler</a>
-            <a href="sepet.html">Sepetim</a>
-            <a href="favoriler.html">Favorilerim</a>
-            <a href="iletisim.html">İletişim</a>
-        </nav>
+        <div class="container">
+            <h1>Site Başlığı</h1>
+            <nav>
+                <a href="index.html">Ana Sayfa</a>
+                <a href="urun-detay.html">Ürünler</a> <a href="sepet.html">Sepetim</a>
+                <a href="favoriler.html">Favorilerim</a>
+                <a href="iletisim.html">İletişim</a>
+            </nav>
+        </div>
     </header>
 
     <main>
         <section id="hero">
-            <h2>Hoş Geldiniz!</h2>
-            <p>Burası yeni web sitenizin ana sayfası.</p>
+            <div class="hero-content">
+                <h2>Yeni Koleksiyonları Keşfedin!</h2>
+                <p>En şık takılar ve aksesuarlar burada. Tarzınızı tamamlayacak parçaları bulun.</p>
+                <a href="#featured-products" class="hero-button">Ürünleri Görüntüle</a>
+            </div>
         </section>
 
-        <section id="featured-products">
+        <section id="product-categories" class="container">
+            <h2>Ürün Kategorileri</h2>
+            <div class="category-list">
+                <div class="category-item">
+                    <img src="placeholder_category_yuzuk.jpg" alt="Yüzükler">
+                    <h3>Yüzükler</h3>
+                    <a href="urun-detay.html?category=yuzukler" class="category-button">Gözat</a>
+                </div>
+                <div class="category-item">
+                    <img src="placeholder_category_kolye.jpg" alt="Kolyeler">
+                    <h3>Kolyeler</h3>
+                    <a href="urun-detay.html?category=kolyeler" class="category-button">Gözat</a>
+                </div>
+                 <div class="category-item">
+                    <img src="placeholder_category_saat.jpg" alt="Saatler">
+                    <h3>Saatler</h3>
+                    <a href="urun-detay.html?category=saatler" class="category-button">Gözat</a>
+                </div>
+                 <div class="category-item">
+                    <img src="placeholder_category_kupe.jpg" alt="Küpe">
+                    <h3>Küpe</h3>
+                    <a href="urun-detay.html?category=kupe" class="category-button">Gözat</a>
+                </div>
+                 </div>
+        </section>
+
+
+        <section id="featured-products" class="container">
             <h2>Öne Çıkan Ürünler</h2>
             <div class="product-list">
-                <!-- Ürünler buraya eklenecek -->
                 <div class="product">
-                    <img src="placeholder.jpg" alt="Ürün Adı">
+                    <img src="placeholder_product1.jpg" alt="Ürün 1">
                     <h3>Ürün 1</h3>
                     <p>100 TL</p>
-                    <button>Sepete Ekle</button>
+                    <button class="add-to-cart">Sepete Ekle</button>
                 </div>
                  <div class="product">
-                    <img src="placeholder.jpg" alt="Ürün Adı">
+                    <img src="placeholder_product2.jpg" alt="Ürün 2">
                     <h3>Ürün 2</h3>
                     <p>150 TL</p>
-                    <button>Sepete Ekle</button>
+                    <button class="add-to-cart">Sepete Ekle</button>
+                </div>
+                 <div class="product">
+                    <img src="placeholder_product3.jpg" alt="Ürün 3">
+                    <h3>Ürün 3</h3>
+                    <p>200 TL</p>
+                    <button class="add-to-cart">Sepete Ekle</button>
                 </div>
             </div>
         </section>
 
-        <section id="about-us">
+        <section id="about-us" class="container">
             <h2>Hakkımızda</h2>
-            <p>Burada şirketiniz hakkında kısa bir bilgi yer alacak.</p>
-        </section>
+            <p>Burada şirketiniz hakkında kısa bir bilgi yer alacak. Vizyonumuz, misyonumuz ve değerlerimizden bahsedebilirsiniz.</p>
+            </section>
     </main>
 
     <footer>
-        <p>&copy; 2023 Site Adı. Tüm Hakları Saklıdır.</p>
+        <div class="container">
+            <p>&copy; 2023 Site Adı. Tüm Hakları Saklıdır.</p>
+        </div>
     </footer>
 
 </body>
-  </html>
-  
+    </html>
+    
