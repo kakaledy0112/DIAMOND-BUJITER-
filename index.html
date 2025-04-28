@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIAMOND - BUJITERI | Şık Takılar ve Aksesuarlar</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
-    <meta name="description" content="DIAMOND - BUJITERI'nin eşsiz takı ve aksesuar koleksiyonlarını keşfedin. Tarzınıza ışıltı katacak yüzükler, kolyeler, küpeler ve saatler burada.">
-    <meta name="keywords" content="DIAMOND BUJITERI, takı, aksesuar, yüzük, kolye, küpe, saat, bujiteri, online takı mağazası, şık aksesuarlar">
+    <meta name="description"
+        content="DIAMOND - BUJITERI'nin eşsiz takı ve aksesuar koleksiyonlarını keşfedin. Tarzınıza ışıltı katacak yüzükler, kolyeler, küpeler ve saatler burada.">
+    <meta name="keywords"
+        content="DIAMOND BUJITERI, takı, aksesuar, yüzük, kolye, küpe, saat, bujiteri, online takı mağazası, şık aksesuarlar">
 </head>
+
 <body>
 
     <div id="notification" class="notification"></div>
@@ -23,15 +27,20 @@
                 <a href="favoriler.html">Favorilerim <span class="favorite-count-badge">0</span></a>
                 <a href="iletisim.html">İletişim</a>
             </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Ürün Ara...">
+                <button id="search-button">Ara</button>
+                <div id="search-results"></div>
+            </div>
         </div>
     </header>
 
     <main>
         <section id="hero">
             <div class="hero-content">
-                <h2>Yeni Koleksiyonları Keşfedin!</h2>
-                <p>En şık takılar ve aksesuarlar burada. Tarzınızı tamamlayacak parçaları bulun.</p>
-                <a href="#featured-products" class="hero-button">Ürünleri Görüntüle</a>
+                <h2>Yeni Koleksiyonları Keşfedin</h2>
+                <p>Tarzınıza ışıltı katacak en yeni takı ve aksesuarlarımızla tanışın.</p>
+                <a href="urun-detay.html" class="hero-button">Şimdi Keşfet</a>
             </div>
         </section>
 
@@ -39,38 +48,54 @@
             <h2>Ürün Kategorileri</h2>
             <div class="category-list">
                 <div class="category-item">
-                    <img src="placeholder_category_yuzuk.jpg" alt="Gümüş yüzük kategorisi görseli">
+                    <img src="category_yuzuk.jpg" alt="Yüzük Kategorisi">
                     <h3>Yüzükler</h3>
-                    <a href="urun-detay.html?category=yuzukler" class="category-button">Gözat</a>
+                    <a href="urun-detay.html?category=yuzuk" class="category-button">Keşfet</a>
                 </div>
                 <div class="category-item">
-                    <img src="placeholder_category_kolye.jpg" alt="Altın kolye kategorisi görseli">
+                    <img src="category_kolye.jpg" alt="Kolye Kategorisi">
                     <h3>Kolyeler</h3>
-                    <a href="urun-detay.html?category=kolyeler" class="category-button">Gözat</a>
+                    <a href="urun-detay.html?category=kolye" class="category-button">Keşfet</a>
                 </div>
-                 <div class="category-item">
-                    <img src="placeholder_category_saat.jpg" alt="Bayan saat kategorisi görseli">
+                <div class="category-item">
+                    <img src="category_kupe.jpg" alt="Küpe Kategorisi">
+                    <h3>Küpeler</h3>
+                    <a href="urun-detay.html?category=kupe" class="category-button">Keşfet</a>
+                </div>
+                <div class="category-item">
+                    <img src="category_saat.jpg" alt="Saat Kategorisi">
                     <h3>Saatler</h3>
-                    <a href="urun-detay.html?category=saatler" class="category-button">Gözat</a>
+                    <a href="urun-detay.html?category=saat" class="category-button">Keşfet</a>
                 </div>
-                 <div class="category-item">
-                    <img src="placeholder_category_kupe.jpg" alt="Pırlanta küpe kategorisi görseli">
-                    <h3>Küpe</h3>
-                    <a href="urun-detay.html?category=kupe" class="category-button">Gözat</a>
-                </div>
-                 </div>
+            </div>
         </section>
 
         <section id="featured-products" class="container">
             <h2>Öne Çıkan Ürünler</h2>
+            <div class="product-filters">
+                <select id="category-filter">
+                    <option value="">Tüm Kategoriler</option>
+                    <option value="yuzuk">Yüzük</option>
+                    <option value="kolye">Kolye</option>
+                    <option value="kupe">Küpe</option>
+                    <option value="saat">Saat</option>
+                </select>
+
+                <select id="price-sort">
+                    <option value="">Fiyata Göre Sırala</option>
+                    <option value="asc">Artan Fiyat</option>
+                    <option value="desc">Azalan Fiyat</option>
+                </select>
+                <button id="filter-button">Filtrele</button>
+            </div>
             <div class="product-list">
-                </div>
+            </div>
         </section>
 
         <section id="about-us" class="container">
             <h2>Hakkımızda</h2>
             <p>Burada şirketiniz hakkında kısa bir bilgi yer alacak. Vizyonumuz, misyonumuz ve değerlerimizden bahsedebilirsiniz.</p>
-            </section>
+        </section>
     </main>
 
     <footer>
@@ -100,8 +125,6 @@
     </div>
 
 </body>
-</html>
 
-</body>
     </html>
     
