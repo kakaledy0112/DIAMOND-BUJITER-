@@ -46,17 +46,19 @@ const cart = {
         }
 
         this.save();
-        renderCart(); // Update cart display
+        renderCart(); // Update cart display if on cart page
         showNotification(`${product.name} sepete eklendi!`, 'success'); // Görsel bildirim
-        // updateFavoriteButtons(); // Favoriye eklemek sepete eklemeyi etkilemez, burada gerek yok
+        updateCartAndFavoriteCounts(); // Sayaçları güncelle
+        // updateFavoriteButtons(); // Sepete eklemek favoriyi etkilemez
     },
 
     remove(productId) {
         this.items = this.items.filter(item => item.id !== productId);
         this.save();
-        renderCart(); // Update cart display
+        renderCart(); // Update cart display if on cart page
         showNotification('Ürün sepetten çıkarıldı.', 'warning'); // Görsel bildirim
-        // updateFavoriteButtons(); // Sepetten çıkarmak favoriyi etkilemez, burada gerek yok
+        updateCartAndFavoriteCounts(); // Sayaçları güncelle
+        // updateFavoriteButtons(); // Sepetten çıkarmak favoriyi etkilemez
     },
 
     updateQuantity(productId, quantity) {
@@ -66,12 +68,12 @@ const cart = {
             if (!isNaN(newQuantity)) {
                  item.quantity = newQuantity;
                  if (item.quantity <= 0) {
-                     this.remove(productId); // remove fonksiyonu zaten bildirim gösteriyor
+                     this.remove(productId); // remove fonksiyonu zaten sayaç güncelliyor
                  } else {
                     this.save();
-                    renderCart(); // Update cart display
-                    // Adet güncellendiğinde bildirim opsiyonel olabilir veya farklı bir mesaj verilebilir
-                    // showNotification(`${item.name} adeti güncellendi.`, 'success');
+                    renderCart(); // Update cart display if on cart page
+                    // showNotification(`${item.name} adeti güncellendi.`, 'success'); // Opsiyonel bildirim
+                    updateCartAndFavoriteCounts(); // Sayaçları güncelle
                  }
             } else {
                 console.error("Invalid quantity provided:", quantity);
@@ -102,16 +104,16 @@ const favorites = {
                 name: product.name,
                 price: product.price,
                 image: product.image,
-                // quantity here might be optional depending on how you use it
             };
             this.items.push(productToAdd);
             this.save();
             renderFavorites(); // Favoriler sayfasındaysa listeyi yeniden çiz
             showNotification(`${product.name} favorilere eklendi!`, 'success'); // Görsel bildirim
             updateFavoriteButtons(); // Sayfadaki tüm favori butonlarının durumunu güncelle
+            updateCartAndFavoriteCounts(); // Sayaçları güncelle
         } else {
             // Zaten favorilerde ise çıkaralım (toggle davranışı)
-            this.remove(product.id);
+            this.remove(product.id); // remove fonksiyonu zaten sayaç ve buton güncelliyor
         }
     },
 
@@ -121,6 +123,7 @@ const favorites = {
         renderFavorites(); // Favoriler sayfasındaysa listeyi yeniden çiz
         showNotification('Ürün favorilerden çıkarıldı.', 'warning'); // Görsel bildirim
         updateFavoriteButtons(); // Sayfadaki tüm favori butonlarının durumunu güncelle
+        updateCartAndFavoriteCounts(); // Sayaçları güncelle
     },
 
     isFavorite(productId) {
@@ -128,21 +131,46 @@ const favorites = {
     }
 };
 
-// --- Notification Functions (Bir önceki adımdan) ---
+// --- Notification Functions ---
 function showNotification(message, type = 'success') {
     const notificationElement = document.getElementById('notification');
     if (notificationElement) {
         notificationElement.innerText = message;
-        // Remove previous type classes
         notificationElement.classList.remove('success', 'error', 'warning');
-        // Add current type class
         notificationElement.classList.add(type);
         notificationElement.classList.add('show');
 
-        // Hide after 3 seconds
         setTimeout(() => {
             notificationElement.classList.remove('show');
         }, 3000);
+    }
+}
+
+// --- Update Counts Function ---
+function updateCartAndFavoriteCounts() {
+    const cartCountBadge = document.querySelector('.cart-count-badge');
+    const favoriteCountBadge = document.querySelector('.favorite-count-badge');
+
+    if (cartCountBadge) {
+        const cartCount = cart.items.reduce((total, item) => total + item.quantity, 0); // Adet toplamını al
+        cartCountBadge.innerText = cartCount > 0 ? cartCount : ''; // 0'dan büyükse sayıyı, değilse boş stringi yaz
+        // JavaScript ile sayacın gizlenmesi/gösterilmesi
+        if (cartCount > 0) {
+            cartCountBadge.style.display = 'inline-block';
+        } else {
+            cartCountBadge.style.display = 'none';
+        }
+    }
+
+    if (favoriteCountBadge) {
+        const favoriteCount = favorites.items.length; // Sadece favori ürün adedi
+        favoriteCountBadge.innerText = favoriteCount > 0 ? favoriteCount : ''; // 0'dan büyükse sayıyı, değilse boş stringi yaz
+         // JavaScript ile sayacın gizlenmesi/gösterilmesi
+        if (favoriteCount > 0) {
+            favoriteCountBadge.style.display = 'inline-block';
+        } else {
+            favoriteCountBadge.style.display = 'none';
+        }
     }
 }
 
@@ -189,7 +217,6 @@ function renderCart() {
         <button class="checkout-button">Ödeme Yap</button>
     `;
 
-    // Add event listener to the checkout button
     const checkoutButton = cartSummaryElement.querySelector('.checkout-button');
     if (checkoutButton) {
         checkoutButton.addEventListener('click', handleCheckout);
@@ -349,8 +376,7 @@ function renderProductList() {
             </div>
         `;
     });
-    // Ürün listesi render edildikten sonra favori butonlarının durumunu güncelle
-    updateFavoriteButtons();
+    updateFavoriteButtons(); // Ürün listesi render edildikten sonra favori butonlarının durumunu güncelle
 }
 
 // Helper function to update the state of favorite buttons across the site
@@ -379,11 +405,17 @@ function updateFavoriteButtons() {
         }
     });
 
-    // Favoriler sayfasındaki "Favoriden Çıkar" butonları için de aynı logic uygulanabilir
-    // Ancak favoriler sayfasında renderFavorites zaten tüm listeyi yeniden çiziyor,
-    // bu da butonların güncel durumunu gösterecektir. Eğer renderFavorites tam sayfa
-    // yenileme yapmıyorsa, bu butonları da update etmek gerekebilir.
-    // Mevcut renderFavorites logic'i tam listeyi çizdiği için ayrıca update etmeye gerek yok.
+    // Favoriler sayfasındaki "Favoriden Çıkar" butonları için
+    const removeFavButtons = document.querySelectorAll('.remove-favorite');
+     removeFavButtons.forEach(button => {
+         const productId = button.getAttribute('data-product-id');
+         if (productId) {
+              const isFav = favorites.isFavorite(productId);
+              // Eğer ürün favorilerden çıkarıldıysa (yani artık isFav false ise),
+              // favoriler sayfasındaki renderFavorites listeyi zaten güncelleyecektir.
+              // Bu kısım mevcut logic ile gerekmiyor ancak farklı bir render yaklaşımı olursa önemli hale gelir.
+         }
+     });
 }
 
 
@@ -401,15 +433,13 @@ window.addEventListener('load', () => {
          renderProductList();
     }
 
-    // Initialize contact form if on the contact page
     if (pathname.includes('iletisim.html')) {
         initContactForm();
     }
 
-    // Sayfa yüklendiğinde favori butonlarının durumunu kontrol et ve güncelle
-    updateFavoriteButtons();
+    updateCartAndFavoriteCounts(); // Sayaçları sayfa yüklendiğinde güncelle
+    updateFavoriteButtons(); // Favori butonlarını sayfa yüklendiğinde güncelle
 
-    // Add more page-specific initializations here if needed
 });
 
 // --- Contact Form Handling ---
@@ -440,7 +470,6 @@ function initContactForm() {
             console.log('Subject:', document.getElementById('subject').value.trim());
             console.log('Message:', message);
 
-            // Simulate successful submission
             showNotification('Mesajınız alındı! Teşekkür ederiz.', 'success'); // Görsel bildirim
 
             contactForm.reset();
@@ -450,7 +479,7 @@ function initContactForm() {
     }
 }
 
-// Basic Checkout Handler (Placeholder)
+// Basic Checkout Handler ---
 function handleCheckout() {
     if (cart.items.length === 0) {
         showNotification('Sepetiniz boş. Ödeme yapılamaz.', 'warning'); // Görsel bildirim
@@ -459,5 +488,5 @@ function handleCheckout() {
     const total = cart.getTotal();
     showNotification(`Toplam ${total} TL için ödeme adımına yönlendiriliyorsunuz. (Bu sadece bir simülasyondur)`, 'success'); // Görsel bildirim
     console.log("Proceeding to checkout with items:", cart.items);
-    }
-            
+            }
+                   
