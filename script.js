@@ -47,16 +47,16 @@ const cart = {
 
         this.save();
         renderCart(); // Update cart display
-        alert(`${product.name} sepete eklendi!`); // Simple notification
-        updateFavoriteButtons(); // Favori butonlarının durumunu güncelle
+        showNotification(`${product.name} sepete eklendi!`, 'success'); // Görsel bildirim
+        // updateFavoriteButtons(); // Favoriye eklemek sepete eklemeyi etkilemez, burada gerek yok
     },
 
     remove(productId) {
         this.items = this.items.filter(item => item.id !== productId);
         this.save();
         renderCart(); // Update cart display
-        alert('Ürün sepetten çıkarıldı.');
-        updateFavoriteButtons(); // Favori butonlarının durumunu güncelle
+        showNotification('Ürün sepetten çıkarıldı.', 'warning'); // Görsel bildirim
+        // updateFavoriteButtons(); // Sepetten çıkarmak favoriyi etkilemez, burada gerek yok
     },
 
     updateQuantity(productId, quantity) {
@@ -66,14 +66,16 @@ const cart = {
             if (!isNaN(newQuantity)) {
                  item.quantity = newQuantity;
                  if (item.quantity <= 0) {
-                     this.remove(productId);
+                     this.remove(productId); // remove fonksiyonu zaten bildirim gösteriyor
                  } else {
                     this.save();
                     renderCart(); // Update cart display
+                    // Adet güncellendiğinde bildirim opsiyonel olabilir veya farklı bir mesaj verilebilir
+                    // showNotification(`${item.name} adeti güncellendi.`, 'success');
                  }
             } else {
                 console.error("Invalid quantity provided:", quantity);
-                // Optionally, provide user feedback for invalid input
+                showNotification("Geçersiz adet değeri.", 'error'); // Hata bildirimi
             }
         }
     },
@@ -95,7 +97,6 @@ const favorites = {
         const existingItem = this.items.find(item => item.id === product.id);
 
         if (!existingItem) {
-             // Ensure we only store necessary product info in cart/favorites
             const productToAdd = {
                 id: product.id,
                 name: product.name,
@@ -105,26 +106,45 @@ const favorites = {
             };
             this.items.push(productToAdd);
             this.save();
-            renderFavorites(); // Update favorites display
-            alert(`${product.name} favorilere eklendi!`);
-            updateFavoriteButtons(); // Favori butonlarının durumunu güncelle
+            renderFavorites(); // Favoriler sayfasındaysa listeyi yeniden çiz
+            showNotification(`${product.name} favorilere eklendi!`, 'success'); // Görsel bildirim
+            updateFavoriteButtons(); // Sayfadaki tüm favori butonlarının durumunu güncelle
         } else {
-            alert(`${product.name} zaten favorilerde!`);
+            // Zaten favorilerde ise çıkaralım (toggle davranışı)
+            this.remove(product.id);
         }
     },
 
     remove(productId) {
         this.items = this.items.filter(item => item.id !== productId);
         this.save();
-        renderFavorites(); // Update favorites display
-        alert('Ürün favorilerden çıkarıldı.');
-        updateFavoriteButtons(); // Favori butonlarının durumunu güncelle
+        renderFavorites(); // Favoriler sayfasındaysa listeyi yeniden çiz
+        showNotification('Ürün favorilerden çıkarıldı.', 'warning'); // Görsel bildirim
+        updateFavoriteButtons(); // Sayfadaki tüm favori butonlarının durumunu güncelle
     },
 
     isFavorite(productId) {
         return this.items.some(item => item.id === productId);
     }
 };
+
+// --- Notification Functions (Bir önceki adımdan) ---
+function showNotification(message, type = 'success') {
+    const notificationElement = document.getElementById('notification');
+    if (notificationElement) {
+        notificationElement.innerText = message;
+        // Remove previous type classes
+        notificationElement.classList.remove('success', 'error', 'warning');
+        // Add current type class
+        notificationElement.classList.add(type);
+        notificationElement.classList.add('show');
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+            notificationElement.classList.remove('show');
+        }, 3000);
+    }
+}
 
 
 // --- Rendering Functions ---
@@ -190,6 +210,7 @@ function renderFavorites() {
     }
 
     favorites.items.forEach(product => {
+         // Favori sayfasında favoriden çıkarma butonu için data-product-id eklendi
         favoritesListElement.innerHTML += `
             <div class="product">
                 <a href="urun-detay.html?id=${product.id}">
@@ -197,7 +218,7 @@ function renderFavorites() {
                      <h3>${product.name}</h3>
                 </a>
                 <p>${product.price} TL</p>
-                <button class="remove-favorite" onclick="favorites.remove('${product.id}')">Favoriden Çıkar</button>
+                <button class="remove-favorite" onclick="favorites.remove('${product.id}')" data-product-id="${product.id}">Favoriden Çıkar</button>
                 <button onclick="cart.add({id: '${product.id}', name: '${product.name}', price: ${product.price}, image: '${product.image}'})">Sepete Ekle</button>
             </div>
         `;
@@ -205,7 +226,6 @@ function renderFavorites() {
 }
 
 // Dummy product data (replace with actual data fetching)
-// Ürün verileri güncellendi ve detaylandırıldı
 const productsData = [
     {
         id: 'yzk001',
@@ -257,7 +277,6 @@ function renderProductDetail() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
-    // Ürün verisini productsData'dan al
     const product = productsData.find(p => p.id === productId);
 
     const productDetailContainer = document.querySelector('.product-detail-container');
@@ -272,7 +291,6 @@ function renderProductDetail() {
         productDetailContainer.querySelector('.product-description p').innerText = product.description;
 
         // Attach event listeners using the product data
-        // Sepete Ekle ve Favorilere Ekle butonlarına event listener'lar eklendi
         const addToCartButton = productDetailContainer.querySelector('.add-to-cart');
         if (addToCartButton) {
              addToCartButton.onclick = () => cart.add(product);
@@ -280,21 +298,12 @@ function renderProductDetail() {
 
         const addToFavoritesButton = productDetailContainer.querySelector('.add-to-favorites');
         if (addToFavoritesButton) {
+            // Favori butonuna data-product-id eklendi
+            addToFavoritesButton.setAttribute('data-product-id', product.id);
             addToFavoritesButton.onclick = () => favorites.add(product);
         }
 
-        // Ürün detay sayfasında favori durumunu kontrol et ve butonu güncelle
-        if (addToFavoritesButton) {
-             if (favorites.isFavorite(product.id)) {
-                addToFavoritesButton.innerText = 'Favorilerde ✅';
-                addToFavoritesButton.disabled = true;
-                addToFavoritesButton.classList.add('favorited');
-             } else {
-                 addToFavoritesButton.innerText = 'Favorilere Ekle';
-                 addToFavoritesButton.disabled = false;
-                 addToFavoritesButton.classList.remove('favorited');
-             }
-        }
+        // Ürün detay sayfasında favori durumunu kontrol et ve butonu güncelle (updateFavoriteButtons çağrılacak)
 
 
         // Update title and meta description based on product
@@ -314,6 +323,8 @@ function renderProductDetail() {
              metaDescription.setAttribute('content', `Aradığınız ürün bulunamadı.`);
          }
     }
+    // Sayfa yüklendiğinde veya ürün detay render edildiğinde buton durumunu güncelle
+    updateFavoriteButtons();
 }
 
 
@@ -325,11 +336,7 @@ function renderProductList() {
      productListElement.innerHTML = ''; // Clear existing placeholders
 
     productsData.forEach(product => {
-        const isFav = favorites.isFavorite(product.id);
-        const favButtonText = isFav ? 'Favorilerde ✅' : 'Favorilere Ekle';
-        const favButtonClass = isFav ? 'add-to-favorites favorited' : 'add-to-favorites'; // CSS için class eklendi
-        const favButtonDisabled = isFav ? 'disabled' : ''; // Butonu devre dışı bırak
-
+        // Favori butonu için data-product-id eklendi
         productListElement.innerHTML += `
             <div class="product">
                 <a href="urun-detay.html?id=${product.id}">
@@ -338,57 +345,45 @@ function renderProductList() {
                 </a>
                 <p>${product.price} TL</p>
                 <button onclick="cart.add({id: '${product.id}', name: '${product.name}', price: ${product.price}, image: '${product.image}'})">Sepete Ekle</button>
-                 <button class="${favButtonClass}" onclick="favorites.add({id: '${product.id}', name: '${product.name}', price: ${product.price}, image: '${product.image}'})" ${favButtonDisabled}>${favButtonText}</button>
+                 <button class="add-to-favorites" onclick="favorites.add({id: '${product.id}', name: '${product.name}', price: ${product.price}, image: '${product.image}'})" data-product-id="${product.id}">Favorilere Ekle</button>
             </div>
         `;
     });
-     // Ürün listesi render edildikten sonra favori butonlarının durumunu güncelle
+    // Ürün listesi render edildikten sonra favori butonlarının durumunu güncelle
     updateFavoriteButtons();
 }
 
 // Helper function to update the state of favorite buttons across the site
 function updateFavoriteButtons() {
-    // Find all favorite buttons
+    // Sayfadaki tüm favori butonlarını seç
     const favButtons = document.querySelectorAll('.add-to-favorites');
 
     favButtons.forEach(button => {
-        // Get the product ID - this depends on how you associate the button with a product
-        // A common way is to use a data attribute
-        // For now, we'll rely on the onclick handler which passes product data
-        // This function is mainly called after cart/favorite changes to refresh states
-        // A more robust approach would involve data attributes like data-product-id="..."
+        // Butonun data-product-id özniteliğinden ürün ID'sini al
+        const productId = button.getAttribute('data-product-id');
+
+        if (productId) {
+            // Ürünün favorilerde olup olmadığını kontrol et
+            const isFav = favorites.isFavorite(productId);
+
+            // Butonun metnini ve sınıfını güncelle
+            if (isFav) {
+                button.innerText = 'Favorilerde ✅';
+                button.classList.add('favorited');
+                button.disabled = true; // Zaten favoride ise devre dışı bırakılabilir
+            } else {
+                button.innerText = 'Favorilere Ekle';
+                button.classList.remove('favorited');
+                button.disabled = false; // Favoride değilse etkinleştir
+            }
+        }
     });
 
-    // For index.html product list, we re-render the list which handles button state.
-    // For product detail page, we update the specific button.
-    // Let's add a check specific to the product detail page button.
-    if (window.location.pathname.includes('urun-detay.html')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-        const addToFavoritesButton = document.querySelector('#product-detail .add-to-favorites');
-        if (addToFavoritesButton && productId) {
-             if (favorites.isFavorite(productId)) {
-                addToFavoritesButton.innerText = 'Favorilerde ✅';
-                addToFavoritesButton.disabled = true;
-                addToFavoritesButton.classList.add('favorited');
-             } else {
-                 addToFavoritesButton.innerText = 'Favorilere Ekle';
-                 addToFavoritesButton.disabled = false;
-                 addToFavoritesButton.classList.remove('favorited');
-             }
-        }
-    } else { // For index.html and other pages with product listings
-         const productsInList = document.querySelectorAll('.product');
-         productsInList.forEach(productElement => {
-             // Assuming product ID can be retrieved from a link or data attribute within the product div
-             // This part needs refinement based on how you add product IDs to HTML
-             // For now, we'll assume the product ID is somehow accessible or the re-render is sufficient for index page.
-             // Let's re-render for simplicity on index page for now.
-             if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-                 renderProductList(); // Re-render the entire list to update button states
-             }
-         });
-    }
+    // Favoriler sayfasındaki "Favoriden Çıkar" butonları için de aynı logic uygulanabilir
+    // Ancak favoriler sayfasında renderFavorites zaten tüm listeyi yeniden çiziyor,
+    // bu da butonların güncel durumunu gösterecektir. Eğer renderFavorites tam sayfa
+    // yenileme yapmıyorsa, bu butonları da update etmek gerekebilir.
+    // Mevcut renderFavorites logic'i tam listeyi çizdiği için ayrıca update etmeye gerek yok.
 }
 
 
@@ -411,7 +406,7 @@ window.addEventListener('load', () => {
         initContactForm();
     }
 
-    // Update favorite button states on load as well
+    // Sayfa yüklendiğinde favori butonlarının durumunu kontrol et ve güncelle
     updateFavoriteButtons();
 
     // Add more page-specific initializations here if needed
@@ -422,69 +417,35 @@ function initContactForm() {
     const contactForm = document.querySelector('#contact-form form');
     if (contactForm) {
         contactForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent actual form submission
+            event.preventDefault();
 
-            // Basic Frontend Validation (can be expanded)
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const message = document.getElementById('message').value.trim();
 
             if (!name || !email || !message) {
-                alert('Lütfen tüm gerekli alanları doldurun.');
+                showNotification('Lütfen tüm gerekli alanları doldurun.', 'warning'); // Görsel bildirim
                 return;
             }
 
-            // Basic Email Format Check (can be expanded with regex)
-            // Daha kapsamlı bir regex eklendi
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                 alert('Lütfen geçerli bir e-posta adresi girin.');
+                 showNotification('Lütfen geçerli bir e-posta adresi girin.', 'warning'); // Görsel bildirim
                  return;
             }
 
-            // Here you would typically send the form data to a backend server
             console.log('Form Submitted!');
             console.log('Name:', name);
             console.log('Email:', email);
-            console.log('Subject:', document.getElementById('subject').value.trim()); // Subject is optional
+            console.log('Subject:', document.getElementById('subject').value.trim());
             console.log('Message:', message);
 
             // Simulate successful submission
-            alert('Mesajınız alındı! Teşekkür ederiz.');
+            showNotification('Mesajınız alındı! Teşekkür ederiz.', 'success'); // Görsel bildirim
 
-            // Optionally clear the form
             contactForm.reset();
 
-            // In a real application, you would use Fetch API or XMLHttpRequest to send data:
-            /*
-            fetch('YOUR_BACKEND_ENDPOINT', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    subject: document.getElementById('subject').value.trim(),
-                    message: message
-                }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-                alert('Mesajınız başarıyla gönderildi!');
-                contactForm.reset();
-            })
-            .catch((error) => {
-                console.error('Error sending form:', error);
-                alert('Mesaj gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
-            });
-            */
+            // Backend gönderimi için fetch bloğu (yorum satırı)
         });
     }
 }
@@ -492,12 +453,11 @@ function initContactForm() {
 // Basic Checkout Handler (Placeholder)
 function handleCheckout() {
     if (cart.items.length === 0) {
-        alert('Sepetiniz boş. Ödeme yapılamaz.');
+        showNotification('Sepetiniz boş. Ödeme yapılamaz.', 'warning'); // Görsel bildirim
         return;
     }
     const total = cart.getTotal();
-    alert(`Toplam ${total} TL için ödeme adımına yönlendiriliyorsunuz. (Bu sadece bir simülasyondur)`);
-    // In a real application, redirect to a payment page or show a payment modal
+    showNotification(`Toplam ${total} TL için ödeme adımına yönlendiriliyorsunuz. (Bu sadece bir simülasyondur)`, 'success'); // Görsel bildirim
     console.log("Proceeding to checkout with items:", cart.items);
-        }
+    }
             
