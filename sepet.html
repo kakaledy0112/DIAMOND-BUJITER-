@@ -7,6 +7,7 @@
     <title>Sepetim - DIAMOND - BUJITERI</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="description" content="DIAMOND - BUJITERI alışveriş sepetinizdeki ürünleri görüntüleyin ve siparişinizi tamamlayın.">
     <meta name="keywords" content="DIAMOND BUJITERI, sepet, alışveriş sepeti, takı, aksesuar, bujiteri, sipariş, ödeme">
 </head>
@@ -16,21 +17,41 @@
     <div id="notification" class="notification"></div>
 
     <header>
-        <div class="container">
-            <h1>DIAMOND - BUJITERI</h1>
-            <nav>
-                <a href="index.html">Ana Sayfa</a>
-                <a href="urun-detay.html">Ürünler</a>
-                <a href="sepet.html">Sepetim <span class="cart-count-badge">0</span></a>
-                <a href="favoriler.html">Favorilerim <span class="favorite-count-badge">0</span></a>
-                <a href="iletisim.html">İletişim</a>
-            </nav>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Ürün Ara...">
-                <button id="search-button">Ara</button>
-                <div id="search-results"></div>
+        <div class="header-top">
+            <div class="container top-bar">
+                <div class="logo">
+                    <h1>DIAMOND - BUJITERI</h1>
+                </div>
+                <div class="top-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Ürün Ara...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="account-links">
+                        <a href="favoriler.html"><i class="fas fa-heart"></i> <span class="favorite-count-badge">0</span></a>
+                        <a href="sepet.html"><i class="fas fa-shopping-cart"></i> <span class="cart-count-badge">0</span></a>
+                    </div>
+                </div>
             </div>
         </div>
+        <nav class="main-nav">
+            <div class="container nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Kategoriler</button>
+                    <div class="dropdown-content">
+                        <a href="#">Yüzük</a>
+                        <a href="#">Kolye</a>
+                        <a href="#">Küpe</a>
+                        <a href="#">Saat</a>
+                        <a href="#">Bileklik</a>
+                    </div>
+                </div>
+                <a href="urun-detay.html">Ürünler</a>
+                <a href="iletisim.html">İletişim</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+            </div>
+        </nav>
     </header>
 
     <main>
@@ -72,4 +93,5 @@
 
 </body>
 
-</html>
+    </html>
+    
