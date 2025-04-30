@@ -139,9 +139,11 @@ section {
     background-color: var(--card-background);
     border-radius: var(--border-radius-medium); /* Daha az yuvarlaklık */
     box-shadow: 0 2px 10px var(--shadow-medium); /* Daha hafif gölge */
+    /* İsterseniz product-detail section için özel bir padding veya stil verebilirsiniz */
 }
 
-section h2 {
+
+section h2, section h3 { /* H3'ü de ekledik */
     font-family: 'Playfair Display', serif;
     text-align: center;
     color: var(--primary-color);
@@ -149,8 +151,12 @@ section h2 {
     font-size: 28px; /* Daha küçük başlık */
     position: relative;
 }
+section h3 { /* H3 için farklı font boyutu */
+     font-size: 24px;
+}
 
-section h2::after {
+
+section h2::after, section h3::after { /* H2 ve H3 için çizgi */
     content: '';
     position: absolute;
     left: 50%;
@@ -161,6 +167,11 @@ section h2::after {
     background-color: var(--primary-color);
     border-radius: 2px;
 }
+/* H3 için çizginin olmasını istemiyorsanız yukarıdaki seçiciden kaldırabilirsiniz */
+section h3::after {
+    display: none; /* Örnek olarak H3 altındaki çizgiyi kaldırdık */
+}
+
 
 /* Kahraman Bölümü (Hero Section) */
 #hero {
@@ -844,18 +855,4 @@ footer p {
         margin-bottom: 10px;
     }
 
-    .cart-item .item-details-col,
-    .cart-item .item-quantity-col,
-    .cart-item .item-total-col,
-    .cart-item .item-actions-col {
-        width: 100%; /* Mobilde tam genişlik */
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    .cart-item .item-quantity-col input[type="number"] {
-        width: 80px; /* Mobilde miktar input genişliği */
-    }
-
-    .cart-item .remove-item-button {
-        width: auto; /*
+    .ca
